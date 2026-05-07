@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SEAE — Sistema de Evaluación de Alternativas Económicas</title>
+  <link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body>
+
+<!-- ================================================================
+     PANTALLA DE BIENVENIDA
+     ================================================================ -->
+<div id="welcome-screen">
+
+  <div class="w-glow g1"></div>
+  <div class="w-glow g2"></div>
+  <div class="w-glow g3"></div>
+  <div class="w-hline wh1"></div>
+  <div class="w-hline wh2"></div>
+  <div class="particle p1"></div>
+  <div class="particle p2"></div>
+  <div class="particle p3"></div>
+  <div class="particle p4"></div>
+  <div class="particle p5"></div>
+
+  <div class="welcome-inner">
+
+  <div style="display:flex; align-items:center; justify-content:center; gap:12px;">
+   <img src="img/logo.png" class="logo-seae">
+   <h1 class="w-title" style="margin:0;"><em>SEAE</em></h1>
+   </div>
+    <p class="w-fullname">Sistema de Evaluación de Alternativas Económicas</p>
+
+    <div class="spacer"></div>
+    <p class="w-desc">
+      Evalúa proyectos mediante métodos financieros estandarizados. Calcula, compara alternativas y exporta reportes en PDF.
+    </p>
+    <div class="spacer"></div>
+    <div class="w-methods">
+      <div class="w-m">
+        <strong>VPN</strong>
+        <span>Valor Presente Neto</span>
+      </div>
+      <div class="w-m">
+        <strong>CAE</strong>
+        <span>Costo Anual Equiv.</span>
+      </div>
+      <div class="w-m">
+        <strong>TIR</strong>
+        <span>Tasa Interna Retorno</span>
+      </div>
+    </div>
+
+    <button class="btn-enter" onclick="openApp()">
+      Ingresar al sistema
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+
+</div>
+
+
+<!-- ================================================================
+     APLICACIÓN PRINCIPAL
+     ================================================================ -->
+<div id="app-screen">
+
+  <!-- ── Sidebar ─────────────────────────────────────────────── -->
+  <nav class="sidebar">
+  <div class="sidebar-brand">
+
+    <img src="img/logo.png" class="logo-seae-top" alt="SEAE">
+
+    <div class="brand-logo">SEAE</div>
+    <div class="brand-sub">Evaluación de<br>Alternativas Económicas</div>
+
+  </div>
+
+    <div class="nav-group-label">Métodos</div>
+
+    <div class="nav-item" data-sec="vpn" onclick="showSection('vpn',this)">
+      <svg class="ni-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6">
+        <path d="M2 13L5.5 8l3 3.5L12 6l2-2"/>
+      </svg>
+      VPN
+    </div>
+    <div class="nav-item" data-sec="cae" onclick="showSection('cae',this)">
+      <svg class="ni-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6">
+        <circle cx="8" cy="8" r="5.5"/>
+        <path d="M8 5v3.2l2.2 2.2"/>
+      </svg>
+      CAE
+    </div>
+    <div class="nav-item" data-sec="tir" onclick="showSection('tir',this)">
+      <svg class="ni-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6">
+        <path d="M2 11.5L5 7l3 3 3-4.5 3-.5"/>
+      </svg>
+      TIR
+    </div>
+
+    <div class="nav-group-label">Análisis</div>
+
+    <div class="nav-item" data-sec="comparar" onclick="showSection('comparar',this)">
+      <svg class="ni-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6">
+        <path d="M8 2v12M3 5.5h4M9 10.5h4"/>
+      </svg>
+      Comparación
+    </div>
+    <div class="nav-item" data-sec="reporte" onclick="showSection('reporte',this)">
+      <svg class="ni-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6">
+        <rect x="3" y="1.5" width="10" height="13" rx="1.5"/>
+        <path d="M6 5.5h4M6 8.5h4M6 11.5h2.5"/>
+      </svg>
+      Reporte PDF
+    </div>
+
+    <div class="sidebar-footer">
+      <button class="btn-back" onclick="backToWelcome()">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6">
+          <path d="M10 3L5 8l5 5"/>
+        </svg>
+        Inicio
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Panel principal ─────────────────────────────────────── -->
+  <div class="main-panel">
+
+    <!-- Topbar -->
+    <div class="panel-topbar">
+      <div class="topbar-dot"></div>
+      <h2 class="topbar-h" id="topbar-h">Valor Presente Neto</h2>
+      <div class="topbar-sep"></div>
+      <p class="topbar-sub" id="topbar-sub">Determina si el proyecto genera valor sobre la inversión</p>
+    </div>
+
+    <div class="panel-body">
+
+
+      <!-- ══════════════════════════════════════════════════════
+           SECCIÓN VPN
+           ══════════════════════════════════════════════════════ -->
+      <div id="sec-vpn" class="section active">
+        <div class="two-col">
+
+          <!-- Entrada -->
+          <div class="card">
+            <div class="card-title">Ingreso de datos</div>
+            <div class="form-group">
+              <label>Inversión inicial — I₀ ($)</label>
+              <input type="number" id="vpn-inv" value="50000" min="0">
+            </div>
+            <div class="form-group">
+              <label>Flujo de efectivo anual — FC ($)</label>
+              <input type="number" id="vpn-flujo" value="15000" min="0">
+            </div>
+            <div class="form-group">
+              <label>Tasa de descuento — i (%)</label>
+              <input type="number" id="vpn-tasa" value="10" min="0" step="0.1">
+            </div>
+            <div class="form-group">
+              <label>Vida útil del proyecto — n (años)</label>
+              <input type="number" id="vpn-vida" value="5" min="1">
+            </div>
+            <div class="form-group">
+              <label>Valor de rescate — VR ($)</label>
+              <input type="number" id="vpn-rescate" value="5000" min="0">
+            </div>
+            <div class="btn-row">
+              <button class="btn-primary" onclick="calcVPN()">Calcular VPN</button>
+              <button class="btn-secondary" onclick="clearVPN()">Limpiar</button>
+            </div>
+          </div>
+
+          <!-- Resultado -->
+          <div class="result-panel">
+            <div class="rp-label">Resultado — VPN</div>
+
+            <!-- Fórmula -->
+            <div class="formula-box">
+              <div class="formula-name">Fórmula general</div>
+              <div class="formula-text">VPN = −I₀ + Σ [FC / (1+i)ᵗ] + VR / (1+i)ⁿ</div>
+            </div>
+
+            <!-- Pasos -->
+            <div class="steps-label">Desarrollo paso a paso</div>
+            <div id="vpn-steps" style="margin-bottom:4px;"></div>
+
+            <!-- Resultado final -->
+            <div id="vpn-final"></div>
+
+            <!-- Interpretación -->
+            <div id="vpn-interp"></div>
+          </div>
+
+        </div>
+      </div>
+
+
+      <!-- ══════════════════════════════════════════════════════
+           SECCIÓN CAE
+           ══════════════════════════════════════════════════════ -->
+      <div id="sec-cae" class="section">
+        <div class="two-col">
+
+          <div class="card">
+            <div class="card-title">Ingreso de datos</div>
+            <div class="form-group">
+              <label>Costo inicial — P ($)</label>
+              <input type="number" id="cae-inv" value="40000" min="0">
+            </div>
+            <div class="form-group">
+              <label>Costo anual de operación — CAO ($)</label>
+              <input type="number" id="cae-op" value="8000" min="0">
+            </div>
+            <div class="form-group">
+              <label>Tasa de descuento — i (%)</label>
+              <input type="number" id="cae-tasa" value="12" min="0" step="0.1">
+            </div>
+            <div class="form-group">
+              <label>Vida útil — n (años)</label>
+              <input type="number" id="cae-vida" value="6" min="1">
+            </div>
+            <div class="form-group">
+              <label>Valor de salvamento — VS ($)</label>
+              <input type="number" id="cae-salvamento" value="4000" min="0">
+            </div>
+            <div class="btn-row">
+              <button class="btn-primary" onclick="calcCAE()">Calcular CAE</button>
+              <button class="btn-secondary" onclick="clearCAE()">Limpiar</button>
+            </div>
+          </div>
+
+          <div class="result-panel">
+            <div class="rp-label">Resultado — CAE</div>
+            <div class="formula-box">
+              <div class="formula-name">Fórmula general</div>
+              <div class="formula-text">CAE = (P − VS) · CRR + VS · i + CAO</div>
+              <div class="formula-text" style="margin-top:4px;font-size:11px;color:rgba(212,146,26,0.7);">
+                donde CRR = i·(1+i)ⁿ / ((1+i)ⁿ − 1)
+              </div>
+            </div>
+            <div class="steps-label">Desarrollo paso a paso</div>
+            <div id="cae-steps" style="margin-bottom:4px;"></div>
+            <div id="cae-final"></div>
+
+            <!-- Interpretación -->
+            <div id="cae-interp"></div>
+          </div>
+
+        </div>
+      </div>
+
+
+      <!-- ══════════════════════════════════════════════════════
+           SECCIÓN TIR
+           ══════════════════════════════════════════════════════ -->
+      <div id="sec-tir" class="section">
+        <div class="two-col">
+
+          <div class="card">
+            <div class="card-title">Ingreso de datos</div>
+            <div class="form-group">
+              <label>Inversión inicial — I₀ ($)</label>
+              <input type="number" id="tir-inv" value="80000" min="0">
+            </div>
+            <div class="form-group">
+              <label>Flujo de efectivo anual — FC ($)</label>
+              <input type="number" id="tir-flujo" value="22000" min="0">
+            </div>
+            <div class="form-group">
+              <label>Vida útil — n (años)</label>
+              <input type="number" id="tir-vida" value="6" min="1">
+            </div>
+            <div class="form-group">
+              <label>Valor de rescate — VR ($)</label>
+              <input type="number" id="tir-rescate" value="10000" min="0">
+            </div>
+            <div class="form-group">
+              <label>TMAR — Tasa mínima atractiva de retorno (%)</label>
+              <input type="number" id="tir-tmar" value="12" min="0" step="0.1">
+            </div>
+            <div class="btn-row">
+              <button class="btn-primary" onclick="calcTIR()">Calcular TIR</button>
+              <button class="btn-secondary" onclick="clearTIR()">Limpiar</button>
+            </div>
+          </div>
+
+          <div class="result-panel">
+            <div class="rp-label">Resultado — TIR</div>
+            <div class="formula-box">
+              <div class="formula-name">Fórmula general</div>
+              <div class="formula-text">0 = −I₀ + Σ [FC / (1+TIR)ᵗ] + VR / (1+TIR)ⁿ</div>
+              <div class="formula-text" style="margin-top:4px;font-size:11px;color:rgba(212,146,26,0.7);">
+                Se despeja TIR por método numérico de bisección
+              </div>
+            </div>
+            <div class="steps-label">Desarrollo paso a paso</div>
+            <div id="tir-steps" style="margin-bottom:4px;"></div>
+            <div id="tir-final"></div>
+
+            <!-- Interpretación -->
+            <div id="tir-interp"></div>
+          </div>
+
+        </div>
+      </div>
+
+
+      <!-- ══════════════════════════════════════════════════════
+           SECCIÓN COMPARACIÓN
+           ══════════════════════════════════════════════════════ -->
+      <div id="sec-comparar" class="section">
+        <div class="two-col" style="margin-bottom:14px;">
+
+          <div class="card">
+            <div class="card-title">Alternativa A</div>
+            <div class="form-group">
+              <label>Nombre</label>
+              <input type="text" id="comp-a-nom" value="Proyecto Alpha">
+            </div>
+            <div class="form-group">
+              <label>Inversión inicial ($)</label>
+              <input type="number" id="comp-a-inv" value="60000">
+            </div>
+            <div class="form-group">
+              <label>Flujo anual ($)</label>
+              <input type="number" id="comp-a-flujo" value="18000">
+            </div>
+            <div class="form-group">
+              <label>Tasa de descuento (%)</label>
+              <input type="number" id="comp-a-tasa" value="10">
+            </div>
+            <div class="form-group">
+              <label>Vida útil (años)</label>
+              <input type="number" id="comp-a-vida" value="5">
+            </div>
+            <div class="form-group">
+              <label>Valor de rescate ($)</label>
+              <input type="number" id="comp-a-rescate" value="5000">
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Alternativa B</div>
+            <div class="form-group">
+              <label>Nombre</label>
+              <input type="text" id="comp-b-nom" value="Proyecto Beta">
+            </div>
+            <div class="form-group">
+              <label>Inversión inicial ($)</label>
+              <input type="number" id="comp-b-inv" value="45000">
+            </div>
+            <div class="form-group">
+              <label>Flujo anual ($)</label>
+              <input type="number" id="comp-b-flujo" value="14000">
+            </div>
+            <div class="form-group">
+              <label>Tasa de descuento (%)</label>
+              <input type="number" id="comp-b-tasa" value="10">
+            </div>
+            <div class="form-group">
+              <label>Vida útil (años)</label>
+              <input type="number" id="comp-b-vida" value="5">
+            </div>
+            <div class="form-group">
+              <label>Valor de rescate ($)</label>
+              <input type="number" id="comp-b-rescate" value="3000">
+            </div>
+          </div>
+
+        </div>
+
+        <div class="btn-row" style="margin-bottom:16px;">
+          <button class="btn-primary" onclick="comparar3Metodos()">Comparar alternativas</button>
+          <button class="btn-secondary" onclick="clearComp()">Limpiar</button>
+        </div>
+
+        <div class="two-col" style="margin-bottom:10px;">
+          <div class="card" id="comp-res-a">
+            <div class="card-title" id="comp-res-a-nom">Alternativa A</div>
+            <div class="metric-card">
+              <div class="metric-label">VPN calculado</div>
+              <div class="metric-value" id="comp-vpn-a">—</div>
+            </div>
+
+          <div class="metric-card">
+  <div class="metric-label">CAE calculado</div>
+  <div class="metric-value" id="comp-cae-a">—</div>
+</div>
+
+<div class="metric-card">
+  <div class="metric-label">TIR calculada</div>
+  <div class="metric-value" id="comp-tir-a">—</div>
+</div>
+
+          </div>
+          <div class="card" id="comp-res-b">
+            <div class="card-title" id="comp-res-b-nom">Alternativa B</div>
+            <div class="metric-card">
+              <div class="metric-label">VPN calculado</div>
+              <div class="metric-value" id="comp-vpn-b">—</div>
+            </div>
+          </div>
+        </div>
+      <div class="metric-card">
+  <div class="metric-label">CAE calculado</div>
+  <div class="metric-value" id="comp-cae-b">—</div>
+</div>
+
+<div class="metric-card">
+  <div class="metric-label">TIR calculada</div>
+  <div class="metric-value" id="comp-tir-b">—</div>
+</div>
+        <div class="conclusion-box" id="comp-conclusion" style="display:none;"></div>
+      </div>
+
+
+      <!-- ══════════════════════════════════════════════════════
+           SECCIÓN REPORTE
+           ══════════════════════════════════════════════════════ -->
+      <div id="sec-reporte" class="section">
+        <div class="card">
+          <div class="card-title">Resumen de cálculos de la sesión</div>
+          <div id="reporte-contenido">
+            <p style="color:var(--ink-soft);font-size:13px;">
+              Realiza cálculos en VPN, CAE o TIR para ver el reporte.
+            </p>
+          </div>
+        </div>
+
+        <button class="btn-export-pdf" onclick="exportarPDF()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="12" y1="18" x2="12" y2="12"/>
+            <line x1="9" y1="15" x2="15" y2="15"/>
+          </svg>
+          Exportar Reporte PDF
+        </button>
+        <p style="font-size:11px;color:var(--ink-soft);text-align:center;margin-top:8px;">
+          Se abrirá una ventana de impresión — elige <strong>"Guardar como PDF"</strong>
+        </p>
+      </div>
+
+
+    </div><!-- /panel-body -->
+  </div><!-- /main-panel -->
+</div><!-- /app-screen -->
+
+
+<div id="toast"></div>
+<script src="js/app.js"></script>
+</body>
+</html>
